@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+    backend:
+        build:
+            context: ./backend
+        volumes:
+            - ./backend/tech_radar:/usr/src/app/tech_radar
+        environment:
+            - PYTHONUNBUFFERED=1
+        ports:
+            - '8000:8000'
+        command: bash -lc "/usr/src/app/.venv/bin/fastapi dev tech_radar/main.py --host 0.0.0.0 --port 8000"
+        restart: unless-stopped
+
+    frontend:
+        build:
+            context: ./frontend
+        volumes:
+            - ./frontend:/usr/src/app
+        ports:
+            - '5173:5173'
+        command: sh -lc "npm run dev -- --host 0.0.0.0"
+        depends_on:
+            - backend
+        restart: unless-stopped
