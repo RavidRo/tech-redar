@@ -35,7 +35,8 @@ tasks:
   format:backend:
     dir: backend
     cmds:
-      - poetry run ruff format .
+      - poetry run ruff check --fix-only ./tech_radar
+      - poetry run ruff format ./tech_radar
 
   format:frontend:
     dir: frontend

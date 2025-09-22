@@ -6,8 +6,10 @@ services:
             context: ./backend
         volumes:
             - ./backend/tech_radar:/usr/src/app/tech_radar
+            - db_data:/usr/src/app/data
         environment:
             - PYTHONUNBUFFERED=1
+            - DATABASE_URL=sqlite+aiosqlite:///./data/tech_radar.db
         ports:
             - '8000:8000'
         command: bash -lc "/usr/src/app/.venv/bin/fastapi dev tech_radar/main.py --host 0.0.0.0 --port 8000"
@@ -24,3 +26,6 @@ services:
         depends_on:
             - backend
         restart: unless-stopped
+
+volumes:
+    db_data:
