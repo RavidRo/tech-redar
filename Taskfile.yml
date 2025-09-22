@@ -1,0 +1,43 @@
+version: '3'
+
+tasks:
+  lint:
+    desc: Run typechecking, linting, and format checks in backend and frontend
+    cmds:
+      - task: lint:backend
+      - task: lint:frontend
+
+  dev:
+    desc: Run backend and frontend in Docker Compose (dev, hot reload)
+    cmds:
+      - docker compose up --build
+
+  format:
+    desc: Format code in backend and frontend
+    cmds:
+      - task: format:backend
+      - task: format:frontend
+
+  lint:backend:
+    dir: backend
+    cmds:
+      - poetry run ruff check ./tech_radar
+      - poetry run ruff format --check ./tech_radar
+      - poetry run mypy ./tech_radar
+
+  lint:frontend:
+    dir: frontend
+    cmds:
+      - npx tsc -p tsconfig.json --noEmit
+      - npx eslint . --max-warnings=0
+      - npx prettier -c .
+
+  format:backend:
+    dir: backend
+    cmds:
+      - poetry run ruff format .
+
+  format:frontend:
+    dir: frontend
+    cmds:
+      - npx prettier -w .
