@@ -36,7 +36,7 @@ export const technologiesSample: Technology[] = [
 		history: {
 			stageTransitions: [
 				{
-					adrLink: 'www.google.com',
+					adrLink: 'https://www.google.com/',
 					transitionDate: new Date(),
 					originalStage: 'Asses',
 				},

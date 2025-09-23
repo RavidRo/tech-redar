@@ -32,7 +32,7 @@ interface TechnologyStoreState {
 }
 
 interface TechnologyStoreActions {
-	addTechnology: (technology: Technology) => void;
+	addTechnology: (technology: Omit<Technology, 'history'>, adrLink?: string) => void;
 	deleteTechnology: (technologyKey: Technology['key']) => void;
 	moveStage: (technologyKey: Technology['key'], newStage: Technology['stage']) => void;
 }
@@ -40,9 +40,16 @@ interface TechnologyStoreActions {
 export const useTechnologiesStore = create<TechnologyStoreState & TechnologyStoreActions>(
 	(set) => ({
 		technologies: technologiesSample,
-
-		addTechnology: (technology) => {
-			set((state) => ({ technologies: [...state.technologies, technology] }));
+		addTechnology: (technology, adrLink?: string) => {
+			set((state) => ({
+				technologies: [
+					...state.technologies,
+					{
+						...technology,
+						history: { stageTransitions: [], discovery: { adrLink, discoveryDate: new Date() } },
+					},
+				],
+			}));
 		},
 		deleteTechnology: (technologyKey: Technology['key']) => {
 			set((state) => ({

@@ -24,14 +24,23 @@ const HistoryTable: ExpandableConfig<Technology>['expandedRowRender'] = (tech) =
 			title: 'Transitions',
 			dataIndex: 'originalStage',
 			key: 'transitions',
-			render: (originalStage: StageView, _entry, index) => {
+			render: (originalStage: StageView, entry, index) => {
 				const nextStage =
 					index === transitions.length - 1 ? tech.stage : transitions[index + 1]?.originalStage;
-				return (
+				const TransitionContent = () => (
 					<>
 						{originalStage} <ArrowRightOutlined /> {nextStage}
 					</>
 				);
+				if (entry.adrLink !== undefined) {
+					return (
+						<a href={entry.adrLink}>
+							<TransitionContent />
+						</a>
+					);
+				} else {
+					return <TransitionContent />;
+				}
 			},
 		},
 		{

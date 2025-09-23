@@ -1,10 +1,13 @@
-import { Space, Table, Tag, type TableProps } from 'antd';
+import { Button, Space, Table, type TableProps } from 'antd';
 import React from 'react';
 import { CATEGORIES, STAGES, type Technology } from '../hooks/useTechnologies';
-import { generateColorFromString } from '../libraries/colors';
-import HistoryTable from './historyTable';
+import HistoryTable from './HistoryTable';
+import TechnologyTag from './TechnologyTag';
 
-const TechnologiesTable: React.FC<{ technologies: Technology[] }> = ({ technologies }) => {
+const TechnologiesTable: React.FC<{
+	technologies: Technology[];
+	onAddNewTechnology: () => void;
+}> = ({ technologies, onAddNewTechnology }) => {
 	const tags = [...new Set(technologies.map((technology) => technology.tags).flat())];
 	const columns: TableProps<Technology>['columns'] = [
 		{
@@ -42,14 +45,9 @@ const TechnologiesTable: React.FC<{ technologies: Technology[] }> = ({ technolog
 			},
 			render: (_, { tags }) => (
 				<>
-					{tags.map((tag) => {
-						const color = generateColorFromString(tag);
-						return (
-							<Tag color={color} key={tag}>
-								{tag.toUpperCase()}
-							</Tag>
-						);
-					})}
+					{tags.map((tag) => (
+						<TechnologyTag key={tag} tag={tag} />
+					))}
 				</>
 			),
 		},
@@ -70,6 +68,11 @@ const TechnologiesTable: React.FC<{ technologies: Technology[] }> = ({ technolog
 			dataSource={technologies}
 			size="middle"
 			expandable={{ expandedRowRender: HistoryTable }}
+			footer={() => (
+				<Button type="dashed" onClick={onAddNewTechnology} style={{ width: '100%' }}>
+					+ Add New Technology
+				</Button>
+			)}
 		/>
 	);
 };
