@@ -42,3 +42,4 @@ tasks:
     dir: frontend
     cmds:
       - npx prettier -w .
+      - npx eslint --fix . > /dev/null 2>&1 || true
