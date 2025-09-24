@@ -1,8 +1,9 @@
 import { Button, Space, Table, type TableProps } from 'antd';
 import React from 'react';
-import { CATEGORIES, STAGES, type Technology } from '../hooks/useTechnologies';
-import HistoryTable from './HistoryTable';
-import TechnologyTag from './TechnologyTag';
+import { CATEGORIES, STAGES, type Technology } from '../../hooks/useTechnologies';
+import HistoryTable from '../HistoryTable';
+import TechnologyTag from '../TechnologyTag';
+import './TechnologiesTable.css';
 
 const TechnologiesTable: React.FC<{
 	technologies: Technology[];
@@ -63,17 +64,19 @@ const TechnologiesTable: React.FC<{
 		},
 	];
 	return (
-		<Table<Technology>
-			columns={columns}
-			dataSource={technologies}
-			size="middle"
-			expandable={{ expandedRowRender: HistoryTable }}
-			footer={() => (
-				<Button type="dashed" onClick={onAddNewTechnology} style={{ width: '100%' }}>
-					+ Add New Technology
-				</Button>
-			)}
-		/>
+		<div className="tech-radar-table">
+			<Table<Technology>
+				columns={columns}
+				dataSource={technologies}
+				size="middle"
+				expandable={{ expandedRowRender: HistoryTable }}
+				footer={() => (
+					<Button type="dashed" onClick={onAddNewTechnology} style={{ width: '100%' }}>
+						+ Add New Technology
+					</Button>
+				)}
+			/>
+		</div>
 	);
 };
 

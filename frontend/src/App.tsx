@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import './App.css';
 import NewTechnologyModalForm from './components/NewTechnologyModalForm';
-import TechnologiesTable from './components/TechnologiesTable';
+import TechnologiesTable from './components/TechnologiesTable/TechnologiesTable';
 import { useTechnologiesStore } from './hooks/useTechnologies';
 import { getAppName } from './libraries/api';
 
@@ -13,7 +13,7 @@ function App() {
 		isLoading,
 		error,
 	} = useQuery({ queryKey: ['app-name'], queryFn: getAppName });
-	const [isModalOpen, setIsModalOpen] = useState(true);
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const tags = [...new Set(technologies.map((technology) => technology.tags).flat())];
 
