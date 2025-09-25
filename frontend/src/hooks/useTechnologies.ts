@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { technologiesSample } from '../technologiesSample';
+// import { technologiesSample } from '../technologiesSample';
 
 export const CATEGORIES = ['Observability', 'Development Tools', 'Data Management'] as const;
 export const STAGES = ['Asses', 'Trial', 'Adopt', 'Hold'] as const;
@@ -15,11 +15,10 @@ export interface StageTransition {
 export interface InitialDiscovery {
 	discoveryDate: Date;
 	// It's optional because the first discovery may have been not recorded
-	adrLink?: string;
+	adrLink: string | null;
 }
 
 export interface Technology {
-	key: string;
 	name: string;
 	category: Category;
 	stage: Stage;
@@ -29,18 +28,22 @@ export interface Technology {
 
 interface TechnologyStoreState {
 	technologies: Technology[];
+	previous_state: Technology[];
 }
 
 interface TechnologyStoreActions {
-	addTechnology: (technology: Omit<Technology, 'history'>, adrLink?: string) => void;
-	deleteTechnology: (technologyKey: Technology['key']) => void;
-	moveStage: (technologyKey: Technology['key'], newStage: Technology['stage']) => void;
+	addTechnology: (technology: Omit<Technology, 'history'>, adrLink: string | null) => void;
+	deleteTechnology: (technologyKey: Technology['name']) => void;
+	moveStage: (technologyKey: Technology['name'], newStage: Technology['stage']) => void;
+	revert: () => void;
+	loadTechnologies: (technologies: Technology[]) => void;
 }
 
 export const useTechnologiesStore = create<TechnologyStoreState & TechnologyStoreActions>(
 	(set) => ({
-		technologies: technologiesSample,
-		addTechnology: (technology, adrLink?: string) => {
+		technologies: [],
+		previous_state: [],
+		addTechnology: (technology, adrLink: string | null) => {
 			set((state) => ({
 				technologies: [
 					...state.technologies,
@@ -49,19 +52,28 @@ export const useTechnologiesStore = create<TechnologyStoreState & TechnologyStor
 						history: { stageTransitions: [], discovery: { adrLink, discoveryDate: new Date() } },
 					},
 				],
+				previous_state: state.technologies,
 			}));
 		},
-		deleteTechnology: (technologyKey: Technology['key']) => {
+		deleteTechnology: (technologyName: Technology['name']) => {
 			set((state) => ({
-				technologies: state.technologies.filter((tech) => tech.key !== technologyKey),
+				technologies: state.technologies.filter((tech) => tech.name !== technologyName),
+				previous_state: state.technologies,
 			}));
 		},
-		moveStage: (technologyKey: Technology['key'], newStage: Technology['stage']) => {
+		moveStage: (technologyName: Technology['name'], newStage: Technology['stage']) => {
 			set((state) => ({
 				technologies: state.technologies.map((tech) =>
-					tech.key === technologyKey ? { ...tech, stage: newStage } : tech,
+					tech.name === technologyName ? { ...tech, stage: newStage } : tech,
 				),
+				previous_state: state.technologies,
 			}));
+		},
+		revert: () => {
+			set((state) => ({ technologies: state.previous_state }));
+		},
+		loadTechnologies: (technologies: Technology[]) => {
+			set({ technologies });
 		},
 	}),
 );

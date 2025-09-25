@@ -13,25 +13,23 @@ import TechnologyTag from './TechnologyTag';
 const { Option } = Select;
 
 interface NewTechnologyFormProps {
+	takenNames: string[];
 	tags: string[];
 	isOpen: boolean;
 	closeModal: () => void;
-	addTechnology: (technology: Omit<Technology, 'history'>, adrLink?: string) => void;
+	addTechnology: (technology: Omit<Technology, 'history'>, adrLink: string | null) => void;
 }
 
 interface FieldType {
 	name: string;
 	category: Category;
 	stage: Stage;
-	tags: string[];
-	adrLink?: string;
+	tags?: string[];
+	adrLink?: string | null;
 }
 
-const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
-	console.log('Failed:', errorInfo);
-};
-
 const NewTechnologyModalForm: React.FC<NewTechnologyFormProps> = ({
+	takenNames,
 	tags,
 	isOpen,
 	closeModal,
@@ -40,13 +38,12 @@ const NewTechnologyModalForm: React.FC<NewTechnologyFormProps> = ({
 	const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
 		addTechnology(
 			{
-				key: values.name, // TODO: Make sure this is unique
 				category: values.category,
 				name: values.name,
 				stage: values.stage,
-				tags: values.tags,
+				tags: values.tags ?? [],
 			},
-			values.adrLink,
+			values.adrLink ?? null,
 		);
 		closeModal();
 	};
@@ -65,14 +62,32 @@ const NewTechnologyModalForm: React.FC<NewTechnologyFormProps> = ({
 					name="newTechnology"
 					clearOnDestroy
 					onFinish={onFinish}
-					onFinishFailed={onFinishFailed}
 					autoComplete="off"
 				>
 					{dom}
 				</Form>
 			)}
 		>
-			<Form.Item<FieldType> label="Name" name="name" rules={[{ required: true }]}>
+			<Form.Item<FieldType>
+				label="Name"
+				name="name"
+				rules={[
+					{ required: true },
+					{
+						validator: (_rule, value) => {
+							if (typeof value !== 'string') {
+								throw Error(
+									`Expected the value of the name field will be of type 'string' but got ${typeof value}`,
+								);
+							}
+							if (takenNames.includes(value)) {
+								return Promise.reject(new Error(`${value} is already on the radar`));
+							}
+							return Promise.resolve();
+						},
+					},
+				]}
+			>
 				<Input />
 			</Form.Item>
 			<Form.Item name="category" label="Category" rules={[{ required: true }]}>
@@ -102,7 +117,7 @@ const NewTechnologyModalForm: React.FC<NewTechnologyFormProps> = ({
 					tagRender={({ value }) => {
 						if (value === undefined) return <></>;
 						if (typeof value !== 'string') {
-							throw Error(`Tag value is expected to be string, ${value}}`);
+							throw Error(`Tag value is expected to be string, ${String(value)}}`);
 						}
 						return <TechnologyTag key={value} tag={value} />;
 					}}

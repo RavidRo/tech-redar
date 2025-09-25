@@ -1,17 +1,30 @@
-from __future__ import annotations
-
 from datetime import datetime
+from typing import Annotated
 
-from sqlalchemy import DateTime, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from beanie import Indexed
+from beanie.odm.documents import Document
+from pydantic import BaseModel
 
-from .database import Base
+
+class InitialDiscovery(BaseModel):
+    discoveryDate: datetime
+    adrLink: str | None
 
 
-class Entry(Base):
-    __tablename__ = "entries"
+class StageTransition(BaseModel):
+    originalStage: str
+    transitionDate: datetime
+    adrLink: str
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    title: Mapped[str] = mapped_column(String(255))
-    description: Mapped[str | None] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+class History(BaseModel):
+    stageTransitions: list[StageTransition]
+    discovery: InitialDiscovery
+
+
+class Technology(Document):
+    name: Annotated[str, Indexed(unique=True)]
+    category: str
+    stage: str
+    tags: list[str]
+    history: History

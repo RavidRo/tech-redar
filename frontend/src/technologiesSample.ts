@@ -2,7 +2,6 @@ import type { Technology } from './hooks/useTechnologies';
 
 export const technologiesSample: Technology[] = [
 	{
-		key: '1',
 		name: 'Filebeat',
 		category: 'Observability',
 		stage: 'Adopt',
@@ -11,11 +10,11 @@ export const technologiesSample: Technology[] = [
 			stageTransitions: [],
 			discovery: {
 				discoveryDate: new Date(),
+				adrLink: null,
 			},
 		},
 	},
 	{
-		key: '2',
 		name: 'Logstash',
 		category: 'Observability',
 		stage: 'Adopt',
@@ -24,11 +23,11 @@ export const technologiesSample: Technology[] = [
 			stageTransitions: [],
 			discovery: {
 				discoveryDate: new Date(),
+				adrLink: null,
 			},
 		},
 	},
 	{
-		key: '3',
 		name: 'Kip',
 		category: 'Observability',
 		stage: 'Hold',
@@ -43,11 +42,11 @@ export const technologiesSample: Technology[] = [
 			],
 			discovery: {
 				discoveryDate: new Date(),
+				adrLink: null,
 			},
 		},
 	},
 	{
-		key: '4',
 		name: 'Pyguru',
 		category: 'Development Tools',
 		stage: 'Asses',
@@ -56,6 +55,7 @@ export const technologiesSample: Technology[] = [
 			stageTransitions: [],
 			discovery: {
 				discoveryDate: new Date(),
+				adrLink: null,
 			},
 		},
 	},

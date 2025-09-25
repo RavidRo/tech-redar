@@ -10,7 +10,7 @@ tasks:
   dev:
     desc: Run backend and frontend in Docker Compose (dev, hot reload)
     cmds:
-      - docker compose up --build
+      - docker compose up --build {{ .CLI_ARGS }}
 
   format:
     desc: Format code in backend and frontend

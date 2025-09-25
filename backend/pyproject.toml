@@ -29,6 +29,7 @@ known-first-party = ["app"]
 [tool.mypy]
 python_version = "3.11"
 strict = true
+plugins = ['pydantic.mypy']
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -55,8 +56,10 @@ packages = []
 python = ">=3.11,<3.12"
 fastapi = ">=0.117.1"
 uvicorn = { version = ">=0.30.0", extras = ["standard"] }
-sqlalchemy = ">=2.0.43"
-aiosqlite = ">=0.21.0"
+beanie = "^2.0.0"
+pydantic-settings = "^2.10.1"
+pydantic = "^2.11.9"
+pymongo = "^4.15.1"
 
 [tool.poetry.group.dev.dependencies]
 ruff = ">=0.13.1"

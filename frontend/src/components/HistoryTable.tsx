@@ -2,10 +2,10 @@ import { ArrowRightOutlined } from '@ant-design/icons';
 import { Table, type TableProps } from 'antd';
 import type { ExpandableConfig } from 'antd/es/table/interface';
 import type { Stage, StageTransition, Technology } from '../hooks/useTechnologies';
-import type { PartialBy, ReplaceProperty } from '../libraries/typesUtilities';
+import type { NullableBy, ReplaceProperty } from '../libraries/typesUtilities';
 
 type StageView = Stage | 'Off Radar';
-type StageTransitionView = PartialBy<
+type StageTransitionView = NullableBy<
 	ReplaceProperty<StageTransition, 'originalStage', StageView>,
 	'adrLink'
 >;
@@ -32,7 +32,7 @@ const HistoryTable: ExpandableConfig<Technology>['expandedRowRender'] = (tech) =
 						{originalStage} <ArrowRightOutlined /> {nextStage}
 					</>
 				);
-				if (entry.adrLink !== undefined) {
+				if (entry.adrLink !== null) {
 					return (
 						<a href={entry.adrLink}>
 							<TransitionContent />

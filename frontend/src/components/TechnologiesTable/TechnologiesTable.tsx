@@ -57,7 +57,7 @@ const TechnologiesTable: React.FC<{
 			key: 'actions',
 			render: (_, _record) => (
 				<Space size="middle">
-					<a>Change Stage</a>
+					<a>Move Stage</a>
 					<a>Delete</a>
 				</Space>
 			),
@@ -75,6 +75,7 @@ const TechnologiesTable: React.FC<{
 						+ Add New Technology
 					</Button>
 				)}
+				rowKey={'name'}
 			/>
 		</div>
 	);
