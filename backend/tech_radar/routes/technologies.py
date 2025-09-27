@@ -47,3 +47,16 @@ async def put_technology(technology_request: PutTechnologyRequest) -> Technology
         ) from err
 
     return technology
+
+
+@router.delete("/{name}")
+async def delete_technology(name: str) -> None:
+    print(f"Deleting {name}")
+    tech = Technology.find_one(Technology.name == name)
+    if not await tech.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Technology with the name '{name}' does not exists",
+        )
+
+    await tech.delete()

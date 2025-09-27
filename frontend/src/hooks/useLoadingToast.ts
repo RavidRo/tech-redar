@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 const toastID = 'loading-technologies';
 const useLoadingToast = (isLoading: boolean, loading?: string) => {
 	useEffect(() => {
-		toast.dismiss();
+		toast.dismiss(toastID);
 		if (isLoading) {
 			toast.loading(loading ?? 'Loading...', { id: toastID });
 		}

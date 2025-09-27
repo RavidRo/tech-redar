@@ -8,7 +8,8 @@ import './TechnologiesTable.css';
 const TechnologiesTable: React.FC<{
 	technologies: Technology[];
 	onAddNewTechnology: () => void;
-}> = ({ technologies, onAddNewTechnology }) => {
+	onDeleteTechnology: (name: string) => void;
+}> = ({ technologies, onAddNewTechnology, onDeleteTechnology }) => {
 	const tags = [...new Set(technologies.map((technology) => technology.tags).flat())];
 	const columns: TableProps<Technology>['columns'] = [
 		{
@@ -55,10 +56,17 @@ const TechnologiesTable: React.FC<{
 		{
 			title: 'Actions',
 			key: 'actions',
-			render: (_, _record) => (
+			render: (_, record) => (
 				<Space size="middle">
 					<a>Move Stage</a>
-					<a>Delete</a>
+					<a
+						onClick={() => {
+							onDeleteTechnology(record.name);
+						}}
+					>
+						{' '}
+						Delete
+					</a>
 				</Space>
 			),
 		},
