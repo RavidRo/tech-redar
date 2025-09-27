@@ -69,7 +69,7 @@ const useToastedMutation = <
 			: typeof options.loadingMessage === 'string'
 				? options.loadingMessage
 				: options.loadingMessage(mutation.variables);
-	useLoadingToast(mutation.isPending, loadingMessage);
+	useLoadingToast(String(mutation.submittedAt), mutation.isPending, loadingMessage);
 
 	return mutation;
 };

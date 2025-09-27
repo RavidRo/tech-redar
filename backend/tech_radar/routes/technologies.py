@@ -5,7 +5,8 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from pymongo.errors import DuplicateKeyError
 
-from tech_radar.models import History, InitialDiscovery, Technology
+from tech_radar.models import History, Technology
+from tech_radar.routes.safe_endpoint import safe_endpoint
 
 router = APIRouter(prefix="/technologies", tags=["technologies"])
 
@@ -15,26 +16,26 @@ class PutTechnologyRequest(BaseModel):
     category: str
     stage: str
     tags: list[str] = Field(default=[])
-    adrLink: str | None = Field(default=None)
+    detailsPage: str | None = Field(default=None)
 
 
 @router.get("/", response_model=list[Technology])
+@safe_endpoint
 async def get_technologies() -> list[Technology]:
     return await Technology.find_all().to_list()
 
 
 @router.put("/", response_model=Technology)
+@safe_endpoint
 async def put_technology(technology_request: PutTechnologyRequest) -> Technology:
     technology = Technology(
         name=technology_request.name,
         category=technology_request.category,
         stage=technology_request.stage,
         tags=technology_request.tags,
+        detailsPage=technology_request.detailsPage,
         history=History(
-            discovery=InitialDiscovery(
-                discoveryDate=datetime.now(),
-                adrLink=technology_request.adrLink,
-            ),
+            discoveryDate=datetime.now(),
             stageTransitions=[],
         ),
     )
@@ -50,8 +51,8 @@ async def put_technology(technology_request: PutTechnologyRequest) -> Technology
 
 
 @router.delete("/{name}")
+@safe_endpoint
 async def delete_technology(name: str) -> None:
-    print(f"Deleting {name}")
     tech = Technology.find_one(Technology.name == name)
     if not await tech.exists():
         raise HTTPException(

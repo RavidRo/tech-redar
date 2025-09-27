@@ -8,6 +8,7 @@ const GetTechnologiesResponse = z.array(
 		category: z.enum(CATEGORIES),
 		stage: z.enum(STAGES),
 		tags: z.array(z.string()),
+		detailsPage: z.string().nullable(),
 		history: z.object({
 			stageTransitions: z.array(
 				z.object({
@@ -16,10 +17,7 @@ const GetTechnologiesResponse = z.array(
 					adrLink: z.string(),
 				}),
 			),
-			discovery: z.object({
-				discoveryDate: isoDateFormat,
-				adrLink: z.string().nullable(),
-			}),
+			discoveryDate: isoDateFormat,
 		}),
 	}),
 );
@@ -35,7 +33,7 @@ interface AddTechnologyRequest {
 	category: string;
 	stage: string;
 	tags: string[];
-	adrLink: string | null;
+	detailsPage: string | null;
 }
 
 export async function addTechnology(addTechnologyRequest: AddTechnologyRequest): Promise<void> {

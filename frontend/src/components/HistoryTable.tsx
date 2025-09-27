@@ -13,9 +13,9 @@ type StageTransitionView = NullableBy<
 const HistoryTable: ExpandableConfig<Technology>['expandedRowRender'] = (tech) => {
 	const transitions: StageTransitionView[] = [
 		{
-			adrLink: tech.history.discovery.adrLink,
 			originalStage: 'Off Radar',
-			transitionDate: tech.history.discovery.discoveryDate,
+			transitionDate: tech.history.discoveryDate,
+			adrLink: null,
 		},
 		...tech.history.stageTransitions,
 	];
@@ -32,7 +32,7 @@ const HistoryTable: ExpandableConfig<Technology>['expandedRowRender'] = (tech) =
 						{originalStage} <ArrowRightOutlined /> {nextStage}
 					</>
 				);
-				if (entry.adrLink !== null) {
+				if (entry.adrLink !== null && entry.adrLink !== undefined) {
 					return (
 						<a href={entry.adrLink}>
 							<TransitionContent />

@@ -13,15 +13,16 @@ import { confirmDeletion } from './libraries/confirmation';
 function App() {
 	const store = useTechnologiesStore();
 
-	const { isLoading, error, isSuccess } = useQuery({
+	const { isPending, error, isSuccess } = useQuery({
 		queryKey: ['app-name'],
 		queryFn: () =>
 			api.getTechnologies().then((fetchedTechnologies) => {
 				store.loadTechnologies(fetchedTechnologies);
 				return fetchedTechnologies;
 			}),
+		retry: 0,
 	});
-	useLoadingToast(isLoading, 'Fetching Technology Radar');
+	useLoadingToast('fetching-technology', isPending, 'Fetching Technology Radar');
 
 	const addTechnologyMutation = useToastedMutation({
 		mutationFn: api.addTechnology,
@@ -69,9 +70,9 @@ function App() {
 				closeModal={() => {
 					setIsModalOpen(false);
 				}}
-				addTechnology={(technology: Omit<Technology, 'history'>, adrLink: string | null) => {
-					store.addTechnology(technology, adrLink);
-					addTechnologyMutation.mutate({ ...technology, adrLink });
+				addTechnology={(technology: Omit<Technology, 'history'>) => {
+					store.addTechnology(technology);
+					addTechnologyMutation.mutate(technology);
 				}}
 			/>
 		</>

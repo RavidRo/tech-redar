@@ -6,7 +6,6 @@ from contextlib import asynccontextmanager
 from beanie import init_beanie
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 from pymongo import AsyncMongoClient
 
 from tech_radar.models import Technology
@@ -28,10 +27,17 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
 app = FastAPI(title="tech-radar backend", lifespan=lifespan)
 
 
+origins = [
+    "http://localhost",
+    "http://localhost:5173",  # Your Vite frontend's origin
+    "*",
+]
+
+
 # CORS for local frontend dev
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -39,13 +45,3 @@ app.add_middleware(
 
 app.include_router(ping_router)
 app.include_router(technologies_router)
-
-
-class AppNameResponse(BaseModel):
-    name: str
-
-
-@app.get("/app-name", response_model=AppNameResponse)
-def app_name() -> AppNameResponse:
-    # Return as a const the name of the app
-    return AppNameResponse(name="tech-radar")

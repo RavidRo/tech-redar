@@ -11,12 +11,8 @@ export const isoDateFormat = z
 
 export const handleResponse = async (response: Response) => {
 	if (!response.ok) {
-		if (response.status >= 400 && response.status < 500) {
-			const result = ClientErrorResponse.safeParse(await response.json());
-			if (result.success) {
-				throw Error(result.data.detail);
-			}
-		}
-		throw Error(await response.text());
+		const result = ClientErrorResponse.safeParse(await response.json());
+		const text = result.success ? result.data.detail : await response.text();
+		throw Error(`${response.statusText}(${String(response.status)}): ${text}`);
 	}
 };

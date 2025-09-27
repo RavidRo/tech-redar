@@ -12,18 +12,13 @@ export interface StageTransition {
 	adrLink: string;
 }
 
-export interface InitialDiscovery {
-	discoveryDate: Date;
-	// It's optional because the first discovery may have been not recorded
-	adrLink: string | null;
-}
-
 export interface Technology {
 	name: string;
 	category: Category;
 	stage: Stage;
 	tags: string[];
-	history: { stageTransitions: StageTransition[]; discovery: InitialDiscovery };
+	detailsPage: string | null;
+	history: { stageTransitions: StageTransition[]; discoveryDate: Date };
 }
 
 interface TechnologyStoreState {
@@ -32,7 +27,7 @@ interface TechnologyStoreState {
 }
 
 interface TechnologyStoreActions {
-	addTechnology: (technology: Omit<Technology, 'history'>, adrLink: string | null) => void;
+	addTechnology: (technology: Omit<Technology, 'history'>) => void;
 	deleteTechnology: (technologyKey: Technology['name']) => void;
 	moveStage: (technologyKey: Technology['name'], newStage: Technology['stage']) => void;
 	revert: () => void;
@@ -43,13 +38,13 @@ export const useTechnologiesStore = create<TechnologyStoreState & TechnologyStor
 	(set) => ({
 		technologies: [],
 		previous_state: [],
-		addTechnology: (technology, adrLink: string | null) => {
+		addTechnology: (technology) => {
 			set((state) => ({
 				technologies: [
 					...state.technologies,
 					{
 						...technology,
-						history: { stageTransitions: [], discovery: { adrLink, discoveryDate: new Date() } },
+						history: { stageTransitions: [], discoveryDate: new Date() },
 					},
 				],
 				previous_state: state.technologies,

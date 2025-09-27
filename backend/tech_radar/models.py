@@ -6,11 +6,6 @@ from beanie.odm.documents import Document
 from pydantic import BaseModel
 
 
-class InitialDiscovery(BaseModel):
-    discoveryDate: datetime
-    adrLink: str | None
-
-
 class StageTransition(BaseModel):
     originalStage: str
     transitionDate: datetime
@@ -19,7 +14,7 @@ class StageTransition(BaseModel):
 
 class History(BaseModel):
     stageTransitions: list[StageTransition]
-    discovery: InitialDiscovery
+    discoveryDate: datetime
 
 
 class Technology(Document):
@@ -27,4 +22,5 @@ class Technology(Document):
     category: str
     stage: str
     tags: list[str]
+    detailsPage: str | None
     history: History

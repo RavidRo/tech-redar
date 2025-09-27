@@ -16,7 +16,8 @@ const TechnologiesTable: React.FC<{
 			title: 'Name',
 			dataIndex: 'name',
 			key: 'name',
-			render: (name) => <a>{name}</a>,
+			render: (name, record) =>
+				record.detailsPage ? <a href={record.detailsPage}>{name}</a> : <>{name}</>,
 			sorter: (tech1, tech2) => tech1.name.localeCompare(tech2.name),
 		},
 		{
@@ -64,7 +65,6 @@ const TechnologiesTable: React.FC<{
 							onDeleteTechnology(record.name);
 						}}
 					>
-						{' '}
 						Delete
 					</a>
 				</Space>

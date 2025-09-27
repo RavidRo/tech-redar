@@ -17,7 +17,7 @@ interface NewTechnologyFormProps {
 	tags: string[];
 	isOpen: boolean;
 	closeModal: () => void;
-	addTechnology: (technology: Omit<Technology, 'history'>, adrLink: string | null) => void;
+	addTechnology: (technology: Omit<Technology, 'history'>) => void;
 }
 
 interface FieldType {
@@ -25,7 +25,7 @@ interface FieldType {
 	category: Category;
 	stage: Stage;
 	tags?: string[];
-	adrLink?: string | null;
+	detailsPage?: string | null;
 }
 
 const NewTechnologyModalForm: React.FC<NewTechnologyFormProps> = ({
@@ -36,15 +36,13 @@ const NewTechnologyModalForm: React.FC<NewTechnologyFormProps> = ({
 	addTechnology,
 }) => {
 	const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-		addTechnology(
-			{
-				category: values.category,
-				name: values.name,
-				stage: values.stage,
-				tags: values.tags ?? [],
-			},
-			values.adrLink ?? null,
-		);
+		addTechnology({
+			category: values.category,
+			name: values.name,
+			stage: values.stage,
+			tags: values.tags ?? [],
+			detailsPage: values.detailsPage ?? null,
+		});
 		closeModal();
 	};
 	return (
@@ -105,8 +103,8 @@ const NewTechnologyModalForm: React.FC<NewTechnologyFormProps> = ({
 				</Select>
 			</Form.Item>
 			<Form.Item<FieldType>
-				label="ADR Link"
-				name="adrLink"
+				label="Details Page"
+				name="detailsPage"
 				rules={[{ required: false, type: 'url' }]}
 			>
 				<Input />

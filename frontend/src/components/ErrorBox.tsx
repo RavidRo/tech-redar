@@ -30,7 +30,7 @@ const ErrorBox: React.FC<ErrorBoxProps> = ({ errorMessage, error }) => {
 					fontFamily: 'monospace',
 				}}
 			>
-				{String(error)}
+				{error.message}
 			</pre>
 		</div>
 	);
