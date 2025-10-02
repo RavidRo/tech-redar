@@ -1,19 +1,18 @@
-version: '3.9'
-
 services:
     backend:
         build:
             context: ./backend
         volumes:
             - ./backend/tech_radar:/usr/src/app/tech_radar
-            - db_data:/usr/src/app/data
         environment:
             - PYTHONUNBUFFERED=1
-            - DATABASE_URL=sqlite+aiosqlite:///./data/tech_radar.db
+            - MONGO_URI=mongodb://root:example@mongo:27017
         ports:
             - '8000:8000'
         command: bash -lc "/usr/src/app/.venv/bin/fastapi dev tech_radar/main.py --host 0.0.0.0 --port 8000"
         restart: unless-stopped
+        depends_on:
+            - mongo
 
     frontend:
         build:
@@ -27,5 +26,28 @@ services:
             - backend
         restart: unless-stopped
 
+    mongo:
+        image: mongo:8.0.14-noble
+        restart: always
+        ports:
+            - '27017:27017'
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: example
+        volumes:
+            - db_data:/data/db
+
+    mongo-express:
+        image: mongo-express:1.0.2
+        restart: always
+        ports:
+            - 8081:8081
+        environment:
+            ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+            ME_CONFIG_BASICAUTH_ENABLED: true
+            ME_CONFIG_BASICAUTH_USERNAME: mongoexpressuser
+            ME_CONFIG_BASICAUTH_PASSWORD: mongoexpresspass
+        depends_on:
+            - mongo
 volumes:
     db_data:

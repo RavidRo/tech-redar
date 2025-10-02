@@ -1,0 +1,81 @@
+import { ArrowRightOutlined } from '@ant-design/icons';
+import { Table, type TableProps } from 'antd';
+import type { ExpandableConfig } from 'antd/es/table/interface';
+import type { Stage, StageTransition, Technology } from '../hooks/useTechnologies';
+import type { NullableBy, ReplaceProperty } from '../libraries/typesUtilities';
+
+type StageView = Stage | 'Off Radar';
+type StageTransitionView = NullableBy<
+	ReplaceProperty<StageTransition, 'originalStage', StageView>,
+	'adrLink'
+>;
+
+const HistoryTable: ExpandableConfig<Technology>['expandedRowRender'] = (tech) => {
+	const transitions: StageTransitionView[] = [
+		{
+			originalStage: 'Off Radar',
+			transitionDate: tech.history.discoveryDate,
+			adrLink: null,
+		},
+		...tech.history.stageTransitions,
+	];
+	const sortedTransitions: StageTransitionView[] = transitions.sort(
+		(t1, t2) => t2.transitionDate.getTime() - t1.transitionDate.getTime(),
+	);
+	const columns: TableProps<StageTransitionView>['columns'] = [
+		{
+			title: 'Transitions',
+			dataIndex: 'originalStage',
+			key: 'transitions',
+			render: (originalStage: StageView, entry, index) => {
+				const nextStage =
+					index === transitions.length - 1 ? tech.stage : transitions[index + 1]?.originalStage;
+				const TransitionContent = () => (
+					<>
+						{originalStage} <ArrowRightOutlined /> {nextStage}
+					</>
+				);
+				if (entry.adrLink !== null && entry.adrLink !== undefined) {
+					return (
+						<a href={entry.adrLink}>
+							<TransitionContent />
+						</a>
+					);
+				} else {
+					return <TransitionContent />;
+				}
+			},
+		},
+		{
+			title: 'Transition Date',
+			dataIndex: 'transitionDate',
+			key: 'transitionDate',
+			showSorterTooltip: false,
+			render: (date: Date) => {
+				return (
+					<>
+						{date.toLocaleDateString('en-GB', {
+							day: '2-digit',
+							month: 'long',
+							year: 'numeric',
+							hour: '2-digit',
+							minute: '2-digit',
+						})}
+					</>
+				);
+			},
+		},
+	];
+
+	return (
+		<Table<StageTransitionView>
+			columns={columns}
+			dataSource={sortedTransitions}
+			size="small"
+			rowKey={'transitionDate'}
+			pagination={false}
+		/>
+	);
+};
+
+export default HistoryTable;

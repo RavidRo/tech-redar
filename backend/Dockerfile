@@ -21,6 +21,6 @@ COPY pyproject.toml poetry.lock* ./
 RUN poetry install --with dev --no-interaction --no-root
 
 # Default command uses fastapi dev server (CLI)
-CMD ["bash", "-lc", "/usr/src/app/.venv/bin/fastapi dev tech_radar/main.py --host 0.0.0.0 --port 8000"]
+CMD ["bash", "-lc", "/usr/src/app/.venv/bin/fastapi dev tech_radar/app.py --host 0.0.0.0 --port 8000"]
 
 

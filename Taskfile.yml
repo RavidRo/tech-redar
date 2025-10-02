@@ -10,7 +10,7 @@ tasks:
   dev:
     desc: Run backend and frontend in Docker Compose (dev, hot reload)
     cmds:
-      - docker compose up --build
+      - docker compose up --build {{ .CLI_ARGS }}
 
   format:
     desc: Format code in backend and frontend
@@ -42,3 +42,4 @@ tasks:
     dir: frontend
     cmds:
       - npx prettier -w .
+      - npx eslint --fix . > /dev/null 2>&1 || true
