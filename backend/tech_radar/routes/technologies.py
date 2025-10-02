@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime
 from typing import Annotated, Any
 
@@ -48,7 +49,8 @@ async def get_technologies(
     and text search across technology names, categories, and tags.
 
     Args:
-        search: Optional text search that matches against technology name, category, and tags (case-insensitive)
+        search: Optional text search that matches against technology name, category,
+        and tags (case-insensitive)
         categories: Optional list of categories to filter by (OR operation)
         stages: Optional list of stages to filter by (OR operation)
         tags: Optional list of tags to filter by (OR operation)
@@ -89,30 +91,33 @@ async def get_technologies(
         if tags:
             query_filters["tags"] = {"$in": tags}
 
-    # Get filtered technologies
-    if query_filters:
-        technologies = await Technology.find(query_filters).to_list()
-    else:
-        technologies = await Technology.find_all().to_list()
+    technologies_task = Technology.find(query_filters).to_list()
+    categories_task = Technology.distinct(Technology.category, query_filters)
+    stages_task = Technology.distinct(Technology.stage, query_filters)
 
-    # Get metadata for frontend filters
+    # TODO: There seams to be some bug with beanie that throws an exception on this query.
+    #       As a workaround I am fetching everything instead for now.
+    # pipeline = [
+    #     {"$unwind": "$tags"},  # Flatten the arrays
+    #     {"$group": {"_id": None, "allTags": {"$addToSet": "$tags"}}},
+    #     {"$project": {"_id": 0, "allTags": 1}},
+    # ]
+    # tags_task = Technology.aggregate(pipeline).to_list()
     all_technologies = await Technology.find_all().to_list()
+    all_tags = {tag for tech in all_technologies for tag in tech.tags}
 
-    # Extract unique categories, stages, and tags
-    categories_set = set()
-    stages_set = set()
-    tags_set = set()
-
-    for tech in all_technologies:
-        categories_set.add(tech.category)
-        stages_set.add(tech.stage)
-        tags_set.update(tech.tags)
+    technologies, all_categories, all_stages = await asyncio.gather(
+        technologies_task,
+        categories_task,
+        stages_task,
+        # tags_task,
+    )
 
     metadata = TechnologyMetadata(
         total_count=len(technologies),
-        categories=sorted(list(categories_set)),
-        stages=sorted(list(stages_set)),
-        available_tags=sorted(list(tags_set)),
+        categories=sorted(list(all_categories)),
+        stages=sorted(list(all_stages)),
+        available_tags=sorted(list(all_tags)),
     )
 
     return TechnologyResponse(technologies=technologies, metadata=metadata)

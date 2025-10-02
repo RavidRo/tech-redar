@@ -74,3 +74,9 @@ tasks:
       - task: format
       - task: lint
       - task: test
+
+  update:
+    dir: backend
+    cmds:
+      - poetry lock
+      - poetry install
