@@ -20,7 +20,7 @@ function App() {
 		queryKey: ['app-name'],
 		queryFn: () =>
 			api.getTechnologies().then((fetchedTechnologies) => {
-				store.loadTechnologies(fetchedTechnologies);
+				store.loadTechnologies(fetchedTechnologies.technologies);
 				return fetchedTechnologies;
 			}),
 		retry: 0,

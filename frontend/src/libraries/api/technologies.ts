@@ -4,25 +4,27 @@ import { HOST, isoDateFormat, handleResponse as validateResponse } from './api';
 
 const JsonContentTypeHeaders = { 'Content-Type': 'application/json' };
 
-const GetTechnologiesResponse = z.array(
-	z.object({
-		name: z.string(),
-		category: z.enum(CATEGORIES),
-		stage: z.enum(STAGES),
-		tags: z.array(z.string()),
-		detailsPage: z.string().nullable(),
-		history: z.object({
-			stageTransitions: z.array(
-				z.object({
-					originalStage: z.enum(STAGES),
-					transitionDate: isoDateFormat,
-					adrLink: z.string(),
-				}),
-			),
-			discoveryDate: isoDateFormat,
+const GetTechnologiesResponse = z.object({
+	technologies: z.array(
+		z.object({
+			name: z.string(),
+			category: z.enum(CATEGORIES),
+			stage: z.enum(STAGES),
+			tags: z.array(z.string()),
+			detailsPage: z.string().nullable(),
+			history: z.object({
+				stageTransitions: z.array(
+					z.object({
+						originalStage: z.enum(STAGES),
+						transitionDate: isoDateFormat,
+						adrLink: z.string(),
+					}),
+				),
+				discoveryDate: isoDateFormat,
+			}),
 		}),
-	}),
-);
+	),
+});
 
 export async function getTechnologies(): Promise<z.infer<typeof GetTechnologiesResponse>> {
 	const response = await fetch(`${HOST}/technologies`);
