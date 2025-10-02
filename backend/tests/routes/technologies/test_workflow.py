@@ -19,7 +19,7 @@ class TestTechnologyWorkflow:
         # 1. Create technology
         create_data = {
             "name": "Lifecycle Test Tech",
-            "category": "Tools",
+            "category": "Development Tools",
             "stage": "Assess",
             "tags": ["testing"],
             "detailsPage": "https://example.com",
@@ -34,7 +34,7 @@ class TestTechnologyWorkflow:
 
         # 3. Update technology
         update_data = {
-            "category": "Platforms",
+            "category": "Data Management",
             "tags": ["testing", "updated"],
             "detailsPage": "https://updated.example.com",
             "stageTransition": {"newStage": "Trial", "adrLink": "https://example.com/adr/trial"},
@@ -48,7 +48,7 @@ class TestTechnologyWorkflow:
         # 4. Verify update
         get_response = await async_client.get("/technologies/?search=Lifecycle Test Tech")
         tech_data = get_response.json()["technologies"][0]
-        assert tech_data["category"] == "Platforms"
+        assert tech_data["category"] == "Data Management"
         assert tech_data["stage"] == "Trial"
         assert len(tech_data["history"]["stageTransitions"]) == 1
 
@@ -67,7 +67,7 @@ class TestTechnologyWorkflow:
         # Create technology in Assess stage
         create_data = {
             "name": "Stage Progression Tech",
-            "category": "Languages & Frameworks",
+            "category": "Frameworks",
             "stage": "Assess",
             "tags": ["new-tech"],
             "detailsPage": "https://example.com",
@@ -83,7 +83,7 @@ class TestTechnologyWorkflow:
 
         for new_stage, adr_link in stages:
             update_data = {
-                "category": "Languages & Frameworks",
+                "category": "Frameworks",
                 "tags": ["new-tech", "progressing"],
                 "detailsPage": "https://example.com",
                 "stageTransition": {"newStage": new_stage, "adrLink": adr_link},

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The Tech Radar is a visual tool for tracking and communicating the adoption lifecycle of technologies within an organization. It displays technologies across different categories (Tools, Techniques, Platforms, Languages & Frameworks) and stages (Hold, Assess, Trial, Adopt) in a radar-like visualization. The system should allow users to view, search, filter, and manage technology entries while maintaining historical records of stage transitions and providing detailed information about each technology.
+The Tech Radar is a visual tool for tracking and communicating the adoption lifecycle of technologies within an organization. It displays technologies across different categories (Observability, Development Tools, Frameworks, Data Management) and stages (Hold, Assess, Trial, Adopt) in a radar-like visualization. The system should allow users to view, search, filter, and manage technology entries while maintaining historical records of stage transitions and providing detailed information about each technology.
 
 ## Requirements
 
@@ -13,7 +13,7 @@ The Tech Radar is a visual tool for tracking and communicating the adoption life
 #### Acceptance Criteria
 
 1. WHEN a user visits the tech radar page THEN the system SHALL display all technologies in a circular radar visualization
-2. WHEN displaying technologies THEN the system SHALL organize them by category (Tools, Techniques, Platforms, Languages & Frameworks) in different quadrants
+2. WHEN displaying technologies THEN the system SHALL organize them by category (Observability, Development Tools, Frameworks, Data Management) in different quadrants
 3. WHEN displaying technologies THEN the system SHALL position them by stage (Hold, Assess, Trial, Adopt) in concentric rings from outer to inner
 4. WHEN a technology is displayed THEN the system SHALL show its name as a clickable element on the radar
 5. IF there are many technologies in one area THEN the system SHALL handle overlapping by adjusting positions or providing hover interactions

@@ -13,7 +13,12 @@ class TestTechnologyModels:
     def test_valid_category_validation_are_accepted(
         self, mock_db: AsyncIOMotorDatabase[Technology]
     ) -> None:
-        valid_categories: list[str] = ["Tools", "Techniques", "Platforms", "Languages & Frameworks"]
+        valid_categories: list[str] = [
+            "Observability",
+            "Development Tools",
+            "Frameworks",
+            "Data Management",
+        ]
 
         for category in valid_categories:
             tech: Technology = Technology(
@@ -45,7 +50,7 @@ class TestTechnologyModels:
         for stage in valid_stages:
             tech: Technology = Technology(
                 name=f"Test-{stage}",
-                category="Tools",
+                category="Development Tools",
                 stage=stage,
                 tags=["test"],
                 detailsPage=None,
@@ -57,7 +62,7 @@ class TestTechnologyModels:
         with pytest.raises(ValidationError):
             Technology(
                 name="Test",
-                category="Tools",
+                category="Development Tools",
                 stage="InvalidStage",
                 tags=["test"],
                 detailsPage=None,

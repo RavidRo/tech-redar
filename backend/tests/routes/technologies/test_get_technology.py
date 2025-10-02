@@ -64,13 +64,13 @@ class TestGetTechnologiesEndpointEndpoint:
         sample_technologies: list[Technology],
     ) -> None:
         """Test categories query parameter."""
-        response: Response = await async_client.get("/technologies/?categories=Tools")
+        response: Response = await async_client.get("/technologies/?categories=Development%20Tools")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
 
         assert len(data["technologies"]) == 1
-        assert data["technologies"][0]["category"] == "Tools"
+        assert data["technologies"][0]["category"] == "Development Tools"
 
     async def test_multiple_categories_query_parameter(
         self,
@@ -80,7 +80,7 @@ class TestGetTechnologiesEndpointEndpoint:
     ) -> None:
         """Test multiple categories query parameter."""
         response: Response = await async_client.get(
-            "/technologies/?categories=Tools&categories=Platforms"
+            "/technologies/?categories=Development%20Tools&categories=Data%20Management"
         )
 
         assert response.status_code == status.HTTP_200_OK
@@ -88,7 +88,7 @@ class TestGetTechnologiesEndpointEndpoint:
 
         assert len(data["technologies"]) == 2
         categories: set[str] = {tech["category"] for tech in data["technologies"]}
-        assert categories == {"Tools", "Platforms"}
+        assert categories == {"Development Tools", "Data Management"}
 
     async def test_stages_query_parameter(
         self,
@@ -130,7 +130,7 @@ class TestGetTechnologiesEndpointEndpoint:
     ) -> None:
         """Test combining multiple query parameters."""
         response: Response = await async_client.get(
-            "/technologies/?categories=Languages%20%26%20Frameworks&stages=Adopt"
+            "/technologies/?categories=Frameworks&stages=Adopt"
         )
 
         assert response.status_code == status.HTTP_200_OK
@@ -138,7 +138,7 @@ class TestGetTechnologiesEndpointEndpoint:
 
         assert len(data["technologies"]) == 1
         assert data["technologies"][0]["name"] == "React"
-        assert data["technologies"][0]["category"] == "Languages & Frameworks"
+        assert data["technologies"][0]["category"] == "Frameworks"
         assert data["technologies"][0]["stage"] == "Adopt"
 
     async def test_search_with_filters(
@@ -148,7 +148,9 @@ class TestGetTechnologiesEndpointEndpoint:
         sample_technologies: list[Technology],
     ) -> None:
         """Test search combined with filters."""
-        response: Response = await async_client.get("/technologies/?search=devops&categories=Tools")
+        response: Response = await async_client.get(
+            "/technologies/?search=devops&categories=Development%20Tools"
+        )
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -308,7 +310,7 @@ class TestTechnologiesEndpointPerformance:
         for i in range(100):
             tech: Technology = Technology(
                 name=f"Technology-{i}",
-                category="Tools" if i % 2 == 0 else "Languages & Frameworks",
+                category="Development Tools" if i % 2 == 0 else "Frameworks",
                 stage="Adopt" if i % 4 == 0 else "Trial",
                 tags=[f"tag-{i}", f"category-{i % 5}"],
                 detailsPage=f"https://example.com/tech-{i}",
@@ -337,12 +339,13 @@ class TestTechnologiesEndpointPerformance:
         """Test performance with complex filtering."""
         # Test multiple filters at once
         response: Response = await async_client.get(
-            "/technologies/?search=dev&categories=Tools&categories=Platforms&stages=Adopt&stages=Trial&tags=devops"
+            "/technologies/?search=dev&categories=Development%20Tools&categories=Data%20Management&stages=Adopt&stages=Trial&tags=devops"
         )
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
 
-        # Should return Docker (Tools, Adopt, devops) but not Kubernetes (Platforms, Trial, devops)
+        # Should return Docker (Development Tools, Adopt, devops) but not Kubernetes
+        # (Data Management, Trial, devops)
         # because search="dev" matches "devops" tag but not "Kubernetes" name
         assert len(data["technologies"]) >= 0  # Could be 0 or more depending on search logic

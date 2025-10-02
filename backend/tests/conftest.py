@@ -55,7 +55,7 @@ async def sample_technologies(mock_db: AsyncIOMotorDatabase[Any]) -> list[Techno
     technologies = [
         Technology(
             name="React",
-            category="Languages & Frameworks",
+            category="Frameworks",
             stage="Adopt",
             tags=["frontend", "javascript", "ui"],
             detailsPage="https://react.dev",
@@ -63,7 +63,7 @@ async def sample_technologies(mock_db: AsyncIOMotorDatabase[Any]) -> list[Techno
         ),
         Technology(
             name="Docker",
-            category="Tools",
+            category="Development Tools",
             stage="Adopt",
             tags=["containerization", "devops"],
             detailsPage="https://docker.com",
@@ -71,7 +71,7 @@ async def sample_technologies(mock_db: AsyncIOMotorDatabase[Any]) -> list[Techno
         ),
         Technology(
             name="Kubernetes",
-            category="Platforms",
+            category="Data Management",
             stage="Trial",
             tags=["orchestration", "devops", "cloud"],
             detailsPage="https://kubernetes.io",
@@ -79,7 +79,7 @@ async def sample_technologies(mock_db: AsyncIOMotorDatabase[Any]) -> list[Techno
         ),
         Technology(
             name="GraphQL",
-            category="Languages & Frameworks",
+            category="Frameworks",
             stage="Assess",
             tags=["api", "query-language"],
             detailsPage="https://graphql.org",
@@ -87,7 +87,7 @@ async def sample_technologies(mock_db: AsyncIOMotorDatabase[Any]) -> list[Techno
         ),
         Technology(
             name="Rust",
-            category="Languages & Frameworks",
+            category="Frameworks",
             stage="Hold",
             tags=["systems", "performance"],
             detailsPage="https://rust-lang.org",

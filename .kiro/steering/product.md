@@ -6,7 +6,7 @@ Tech Radar 380 is a technology assessment and tracking application that helps or
 
 -   **Technology Management**: Add, edit, and delete technologies with detailed metadata
 -   **Stage Tracking**: Categorize technologies into adoption stages (Hold, Assess, Trial, Adopt)
--   **Category Organization**: Group technologies by type (Tools, Techniques, Platforms, Languages & Frameworks)
+-   **Category Organization**: Group technologies by type (Observability, Development Tools, Frameworks, Data Management)
 -   **Historical Tracking**: Maintain history of stage transitions with ADR links and discovery dates
 -   **Tag System**: Flexible tagging for cross-cutting technology concerns
 -   **Interactive UI**: Modern React-based interface with Ant Design components

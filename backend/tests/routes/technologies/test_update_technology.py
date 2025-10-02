@@ -20,7 +20,7 @@ class TestUpdateTechnologiesEndpoint:
     ) -> None:
         """Test successful technology update."""
         update_data = {
-            "category": "Platforms",
+            "category": "Data Management",
             "tags": ["updated", "frontend"],
             "detailsPage": "https://updated-react.dev",
             "stageTransition": None,
@@ -34,7 +34,7 @@ class TestUpdateTechnologiesEndpoint:
         get_response: Response = await async_client.get("/technologies/?search=React")
         tech_data = get_response.json()["technologies"][0]
 
-        assert tech_data["category"] == "Platforms"
+        assert tech_data["category"] == "Data Management"
         assert tech_data["tags"] == ["updated", "frontend"]
         assert tech_data["detailsPage"] == "https://updated-react.dev"
 
@@ -46,7 +46,7 @@ class TestUpdateTechnologiesEndpoint:
     ) -> None:
         """Test technology update with stage transition."""
         update_data = {
-            "category": "Languages & Frameworks",
+            "category": "Frameworks",
             "tags": ["frontend", "javascript"],
             "detailsPage": "https://react.dev",
             "stageTransition": {
@@ -75,7 +75,7 @@ class TestUpdateTechnologiesEndpoint:
     ) -> None:
         """Test updating a technology that doesn't exist."""
         update_data = {
-            "category": "Tools",
+            "category": "Development Tools",
             "tags": ["test"],
             "detailsPage": None,
             "stageTransition": None,

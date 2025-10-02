@@ -17,7 +17,9 @@ class History(BaseModel):
     discoveryDate: datetime
 
 
-category_field = Field(..., pattern="^(Tools|Techniques|Platforms|Languages & Frameworks)$")
+category_field = Field(
+    ..., pattern="^(Observability|Development Tools|Frameworks|Data Management)$"
+)
 stage_field = Field(..., pattern="^(Hold|Assess|Trial|Adopt)$")
 
 

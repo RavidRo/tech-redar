@@ -1,7 +1,12 @@
 import { create } from 'zustand';
 // import { technologiesSample } from '../technologiesSample';
 
-export const CATEGORIES = ['Observability', 'Development Tools', 'Data Management'] as const;
+export const CATEGORIES = [
+	'Observability',
+	'Development Tools',
+	'Frameworks',
+	'Data Management',
+] as const;
 export const STAGES = ['Asses', 'Trial', 'Adopt', 'Hold'] as const;
 export type Category = (typeof CATEGORIES)[number];
 export type Stage = (typeof STAGES)[number];

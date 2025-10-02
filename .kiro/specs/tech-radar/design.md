@@ -225,7 +225,7 @@ The existing `Technology` model is well-designed and requires minimal changes:
 # Add validation for stages and categories
 class Technology(Document):
     name: Annotated[str, Indexed(unique=True)]
-    category: str = Field(..., regex="^(Tools|Techniques|Platforms|Languages & Frameworks)$")
+    category: str = Field(..., regex="^(Observability|Development Tools|Frameworks|Data Management)$")
     stage: str = Field(..., regex="^(Hold|Assess|Trial|Adopt)$")
     tags: list[str]
     detailsPage: str | None
@@ -255,10 +255,10 @@ The radar uses a polar coordinate system with:
 
 ```typescript
 const CATEGORY_ANGLES = {
-	Tools: { start: 0, end: 90 },
-	Techniques: { start: 90, end: 180 },
-	Platforms: { start: 180, end: 270 },
-	'Languages & Frameworks': { start: 270, end: 360 },
+	Observability: { start: 0, end: 90 },
+	'Development Tools': { start: 90, end: 180 },
+	Frameworks: { start: 180, end: 270 },
+	'Data Management': { start: 270, end: 360 },
 };
 ```
 
