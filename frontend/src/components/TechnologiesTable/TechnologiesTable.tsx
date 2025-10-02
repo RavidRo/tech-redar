@@ -9,7 +9,8 @@ const TechnologiesTable: React.FC<{
 	technologies: Technology[];
 	onAddNewTechnology: () => void;
 	onDeleteTechnology: (name: string) => void;
-}> = ({ technologies, onAddNewTechnology, onDeleteTechnology }) => {
+	editTechnology: (technology: Technology) => void;
+}> = ({ technologies, onAddNewTechnology, onDeleteTechnology, editTechnology }) => {
 	const tags = [...new Set(technologies.map((technology) => technology.tags).flat())];
 	const columns: TableProps<Technology>['columns'] = [
 		{
@@ -59,7 +60,13 @@ const TechnologiesTable: React.FC<{
 			key: 'actions',
 			render: (_, record) => (
 				<Space size="middle">
-					<a>Move Stage</a>
+					<a
+						onClick={() => {
+							editTechnology(record);
+						}}
+					>
+						Edit
+					</a>
 					<a
 						onClick={() => {
 							onDeleteTechnology(record.name);

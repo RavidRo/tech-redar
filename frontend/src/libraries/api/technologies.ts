@@ -2,6 +2,8 @@ import z from 'zod';
 import { CATEGORIES, STAGES } from '../../hooks/useTechnologies';
 import { HOST, isoDateFormat, handleResponse as validateResponse } from './api';
 
+const JsonContentTypeHeaders = { 'Content-Type': 'application/json' };
+
 const GetTechnologiesResponse = z.array(
 	z.object({
 		name: z.string(),
@@ -40,12 +42,34 @@ export async function addTechnology(addTechnologyRequest: AddTechnologyRequest):
 	const response = await fetch(`${HOST}/technologies`, {
 		method: 'PUT',
 		body: JSON.stringify(addTechnologyRequest),
-		headers: { 'Content-Type': 'application/json' },
+		headers: JsonContentTypeHeaders,
 	});
 	await validateResponse(response);
 }
 
 export async function deleteTechnology(name: string): Promise<void> {
 	const response = await fetch(`${HOST}/technologies/${name}`, { method: 'DELETE' });
+	await validateResponse(response);
+}
+
+interface UpdateTechnologyRequest {
+	category: string;
+	tags: string[];
+	detailsPage: string | null;
+	stageTransition: {
+		newStage: string;
+		adrLink: string;
+	} | null;
+}
+
+export async function updateTechnology(
+	technology: UpdateTechnologyRequest & { name: string },
+): Promise<void> {
+	const { ['name']: name, ...rest } = technology;
+	const response = await fetch(`${HOST}/technologies/${name}`, {
+		method: 'POST',
+		body: JSON.stringify(rest),
+		headers: JsonContentTypeHeaders,
+	});
 	await validateResponse(response);
 }

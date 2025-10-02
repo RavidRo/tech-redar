@@ -1,6 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import './App.css';
+import EditTechnologyModalForm, {
+	type EditTechnologyModalFormRef,
+} from './components/EditTechnologyModalForm';
 import ErrorBox from './components/ErrorBox';
 import NewTechnologyModalForm from './components/NewTechnologyModalForm';
 import TechnologiesTable from './components/TechnologiesTable/TechnologiesTable';
@@ -36,10 +39,18 @@ function App() {
 		successMessage: (_data, variables) => `Deleted ${variables}`,
 		loadingMessage: (variables) => `Deleting ${variables}`,
 	});
+	const updateTechnologyMutation = useToastedMutation({
+		mutationFn: api.updateTechnology,
+		onError: store.revert,
+		successMessage: (_data, variables) => `Saved ${variables.name}`,
+		loadingMessage: (variables) => `Updating ${variables.name}`,
+	});
 
-	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
 	const tags = [...new Set(store.technologies.map((technology) => technology.tags).flat())];
+
+	const editTechnologyModalRef = useRef<EditTechnologyModalFormRef>(null);
 
 	return (
 		<>
@@ -50,7 +61,10 @@ function App() {
 				<TechnologiesTable
 					technologies={store.technologies}
 					onAddNewTechnology={() => {
-						setIsModalOpen(true);
+						setIsAddModalOpen(true);
+					}}
+					editTechnology={(technology) => {
+						editTechnologyModalRef.current?.open(technology);
 					}}
 					onDeleteTechnology={(name: string) => {
 						confirmDeletion(() => {
@@ -66,14 +80,22 @@ function App() {
 			<NewTechnologyModalForm
 				takenNames={store.technologies.map((tech) => tech.name)}
 				tags={tags}
-				isOpen={isModalOpen}
+				isOpen={isAddModalOpen}
 				closeModal={() => {
-					setIsModalOpen(false);
+					setIsAddModalOpen(false);
 				}}
 				addTechnology={(technology: Omit<Technology, 'history'>) => {
 					store.addTechnology(technology);
 					addTechnologyMutation.mutate(technology);
 				}}
+			/>
+			<EditTechnologyModalForm
+				tags={tags}
+				onSave={(editedTech) => {
+					store.editTechnology(editedTech);
+					updateTechnologyMutation.mutate(editedTech);
+				}}
+				ref={editTechnologyModalRef}
 			/>
 		</>
 	);

@@ -26,13 +26,44 @@ interface TechnologyStoreState {
 	previous_state: Technology[];
 }
 
+export type EditedTechnology = Omit<Technology, 'history' | 'stage'> & {
+	stageTransition: { newStage: Stage; adrLink: string } | null;
+};
+
 interface TechnologyStoreActions {
 	addTechnology: (technology: Omit<Technology, 'history'>) => void;
 	deleteTechnology: (technologyKey: Technology['name']) => void;
-	moveStage: (technologyKey: Technology['name'], newStage: Technology['stage']) => void;
 	revert: () => void;
 	loadTechnologies: (technologies: Technology[]) => void;
+	editTechnology: (technology: EditedTechnology) => void;
 }
+
+const createNewTechnologyDocument = (
+	original: Technology,
+	editValues: EditedTechnology,
+): Technology => {
+	const stageTransition: StageTransition | null = editValues.stageTransition
+		? {
+				originalStage: original.stage,
+				adrLink: editValues.stageTransition.adrLink,
+				transitionDate: new Date(),
+			}
+		: null;
+	return {
+		name: editValues.name,
+		category: editValues.category,
+		detailsPage: editValues.detailsPage,
+		tags: editValues.tags,
+		stage: editValues.stageTransition ? editValues.stageTransition.newStage : original.stage,
+		history: {
+			discoveryDate: original.history.discoveryDate,
+			stageTransitions: [
+				...original.history.stageTransitions,
+				...(stageTransition ? [stageTransition] : []),
+			],
+		},
+	};
+};
 
 export const useTechnologiesStore = create<TechnologyStoreState & TechnologyStoreActions>(
 	(set) => ({
@@ -56,10 +87,12 @@ export const useTechnologiesStore = create<TechnologyStoreState & TechnologyStor
 				previous_state: state.technologies,
 			}));
 		},
-		moveStage: (technologyName: Technology['name'], newStage: Technology['stage']) => {
+		editTechnology: (editedTechnology: EditedTechnology) => {
 			set((state) => ({
-				technologies: state.technologies.map((tech) =>
-					tech.name === technologyName ? { ...tech, stage: newStage } : tech,
+				technologies: state.technologies.map((originalTech) =>
+					originalTech.name === editedTechnology.name
+						? createNewTechnologyDocument(originalTech, editedTechnology)
+						: originalTech,
 				),
 				previous_state: state.technologies,
 			}));

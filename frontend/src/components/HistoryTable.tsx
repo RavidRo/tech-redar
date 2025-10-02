@@ -19,6 +19,9 @@ const HistoryTable: ExpandableConfig<Technology>['expandedRowRender'] = (tech) =
 		},
 		...tech.history.stageTransitions,
 	];
+	const sortedTransitions: StageTransitionView[] = transitions.sort(
+		(t1, t2) => t2.transitionDate.getTime() - t1.transitionDate.getTime(),
+	);
 	const columns: TableProps<StageTransitionView>['columns'] = [
 		{
 			title: 'Transitions',
@@ -47,6 +50,7 @@ const HistoryTable: ExpandableConfig<Technology>['expandedRowRender'] = (tech) =
 			title: 'Transition Date',
 			dataIndex: 'transitionDate',
 			key: 'transitionDate',
+			showSorterTooltip: false,
 			render: (date: Date) => {
 				return (
 					<>
@@ -66,7 +70,7 @@ const HistoryTable: ExpandableConfig<Technology>['expandedRowRender'] = (tech) =
 	return (
 		<Table<StageTransitionView>
 			columns={columns}
-			dataSource={transitions}
+			dataSource={sortedTransitions}
 			size="small"
 			rowKey={'transitionDate'}
 			pagination={false}
