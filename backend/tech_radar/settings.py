@@ -8,4 +8,5 @@ class Settings(BaseSettings):
     mongo_uri: MongoDsn = Field(validation_alias="MONGO_URI")
 
 
-SETTINGS = Settings()  # type: ignore[call-arg, unused-ignore] # I am having trouble getting this to work on VSCode
+def load_settings() -> Settings:
+    return Settings()  # type: ignore[call-arg, unused-ignore] # I am having trouble getting this to work on VSCode

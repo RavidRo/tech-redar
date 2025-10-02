@@ -18,12 +18,36 @@ tasks:
       - task: format:backend
       - task: format:frontend
 
+  test:
+    desc: Run tests for backend and frontend
+    cmds:
+      - task: test:backend
+      - task: test:frontend
+
+  test:backend:
+    desc: Run backend tests
+    dir: backend
+    cmds:
+      - poetry run pytest -v
+
+  test:backend:cov:
+    desc: Run backend tests with coverage
+    dir: backend
+    cmds:
+      - poetry run pytest --cov=tech_radar --cov-report=html --cov-report=term
+
+  test:frontend:
+    desc: Run frontend tests
+    dir: frontend
+    cmds:
+      - echo "No tests yes :("
+
   lint:backend:
     dir: backend
     cmds:
-      - poetry run ruff check ./tech_radar
-      - poetry run ruff format --check ./tech_radar
-      - poetry run mypy ./tech_radar
+      - poetry run ruff check ./tech_radar ./tests
+      - poetry run ruff format --check ./tech_radar ./tests
+      - poetry run mypy ./tech_radar ./tests
 
   lint:frontend:
     dir: frontend
@@ -35,11 +59,18 @@ tasks:
   format:backend:
     dir: backend
     cmds:
-      - poetry run ruff check --fix-only ./tech_radar
-      - poetry run ruff format ./tech_radar
+      - poetry run ruff check --fix-only ./tech_radar ./tests
+      - poetry run ruff format ./tech_radar ./tests
 
   format:frontend:
     dir: frontend
     cmds:
       - npx prettier -w .
       - npx eslint --fix . > /dev/null 2>&1 || true
+
+  ci:
+    desc: Run all integration tasks to make sure everything is in the highest standard
+    cmds:
+      - task: format
+      - task: lint
+      - task: test

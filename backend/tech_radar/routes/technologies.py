@@ -1,26 +1,105 @@
 from datetime import datetime
+from typing import Annotated, Any
 
 from beanie.exceptions import RevisionIdWasChanged
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 from pymongo.errors import DuplicateKeyError
 
-from tech_radar.models import History, StageTransition, Technology
+from tech_radar.models import (
+    History,
+    StageTransition,
+    Technology,
+    category_field,
+    stage_field,
+)
 from tech_radar.routes.safe_endpoint import safe_endpoint
 
 router = APIRouter(prefix="/technologies", tags=["technologies"])
 
 
-@router.get("/", response_model=list[Technology])
+class TechnologyMetadata(BaseModel):
+    total_count: int
+    categories: list[str]
+    stages: list[str]
+    available_tags: list[str]
+
+
+class TechnologyResponse(BaseModel):
+    technologies: list[Technology]
+    metadata: TechnologyMetadata
+
+
+@router.get("/", response_model=TechnologyResponse)
 @safe_endpoint
-async def get_technologies() -> list[Technology]:
-    return await Technology.find_all().to_list()
+async def get_technologies(
+    search: Annotated[
+        str | None, Query(description="Search across name, category, and tags")
+    ] = None,
+    categories: Annotated[list[str] | None, Query(description="Filter by categories")] = None,
+    stages: Annotated[list[str] | None, Query(description="Filter by stages")] = None,
+    tags: Annotated[list[str] | None, Query(description="Filter by tags")] = None,
+) -> TechnologyResponse:
+    # Build query filters
+    query_filters: dict[str, Any] = {}
+
+    # Text search across name, category, and tags
+    if search:
+        search_regex = {"$regex": search, "$options": "i"}
+        query_filters["$or"] = [
+            {"name": search_regex},
+            {"category": search_regex},
+            {"tags": search_regex},
+        ]
+
+    if categories is not None:
+        categories = [c for c in categories if len(c) > 0]
+        if len(categories) > 0:
+            query_filters["category"] = {"$in": categories}
+
+    if stages is not None:
+        stages = [s for s in stages if len(s) > 0]
+        if stages:
+            query_filters["stage"] = {"$in": stages}
+
+    if tags is not None:
+        tags = [t for t in tags if len(t) > 0]
+        if tags:
+            query_filters["tags"] = {"$in": tags}
+
+    # Get filtered technologies
+    if query_filters:
+        technologies = await Technology.find(query_filters).to_list()
+    else:
+        technologies = await Technology.find_all().to_list()
+
+    # Get metadata for frontend filters
+    all_technologies = await Technology.find_all().to_list()
+
+    # Extract unique categories, stages, and tags
+    categories_set = set()
+    stages_set = set()
+    tags_set = set()
+
+    for tech in all_technologies:
+        categories_set.add(tech.category)
+        stages_set.add(tech.stage)
+        tags_set.update(tech.tags)
+
+    metadata = TechnologyMetadata(
+        total_count=len(technologies),
+        categories=sorted(list(categories_set)),
+        stages=sorted(list(stages_set)),
+        available_tags=sorted(list(tags_set)),
+    )
+
+    return TechnologyResponse(technologies=technologies, metadata=metadata)
 
 
 class PutTechnologyRequest(BaseModel):
     name: str
-    category: str
-    stage: str
+    category: str = category_field
+    stage: str = stage_field
     tags: list[str] = Field(default=[])
     detailsPage: str | None = Field(default=None)
 
@@ -69,7 +148,7 @@ class NewStageTransition(BaseModel):
 
 
 class UpdateTechnologyRequest(BaseModel):
-    category: str
+    category: str = category_field
     tags: list[str]
     detailsPage: str | None
     stageTransition: NewStageTransition | None

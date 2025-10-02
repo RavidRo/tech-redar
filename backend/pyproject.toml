@@ -54,15 +54,32 @@ packages = []
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
-fastapi = ">=0.117.1"
-uvicorn = { version = ">=0.30.0", extras = ["standard"] }
+fastapi = ">=0.118.0"
+uvicorn = { version = ">=0.37.0", extras = ["standard"] }
 beanie = "^2.0.0"
-pydantic-settings = "^2.10.1"
+pydantic-settings = "^2.11.0"
 pydantic = "^2.11.9"
-pymongo = "^4.15.1"
+pymongo = "^4.15.2"
 
 [tool.poetry.group.dev.dependencies]
-ruff = ">=0.13.1"
+ruff = ">=0.13.2"
 mypy = ">=1.18.2"
 types-requests = ">=2.32.0.20240914"
 fastapi-cli = ">=0.0.5"
+pytest = "^8.0.0"
+pytest-asyncio = "^1.2.0"
+httpx = "^0.28.1"
+mongomock-motor = "^0.0.36"
+pytest-mock = "^3.14.0"
+
+[tool.pytest.ini_options]
+filterwarnings = [
+	# Beanie is raising deprecation warnings which I can't control
+	"ignore:Accessing the 'model_fields' attribute on the instance is deprecated",
+]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+addopts = "-v --tb=short"

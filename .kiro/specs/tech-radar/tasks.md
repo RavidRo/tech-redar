@@ -1,10 +1,9 @@
 # Implementation Plan
 
--   [ ] 1. Set up enhanced backend API with filtering and search
+-   [x] 1. Set up enhanced backend API with filtering and search
 
     -   Enhance the existing GET /technologies endpoint to support query parameters for search, category, stage, and tag filtering
     -   Add metadata response with available categories, stages, and tags for frontend filters
-    -   Update the existing POST /technologies/{name} endpoint to handle stage transitions automatically
     -   Add database indexes for efficient filtering and searching
     -   _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 

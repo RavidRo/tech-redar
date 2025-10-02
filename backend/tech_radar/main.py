@@ -11,13 +11,14 @@ from pymongo import AsyncMongoClient
 from tech_radar.models import Technology
 from tech_radar.routes.ping import router as ping_router
 from tech_radar.routes.technologies import router as technologies_router
-from tech_radar.settings import SETTINGS
+from tech_radar.settings import load_settings
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     # Startup
-    client: AsyncMongoClient[Technology] = AsyncMongoClient[Technology](str(SETTINGS.mongo_uri))
+    settings = load_settings()
+    client: AsyncMongoClient[Technology] = AsyncMongoClient[Technology](str(settings.mongo_uri))
     await init_beanie(database=client.get_database("tech_radar"), document_models=[Technology])
 
     yield
