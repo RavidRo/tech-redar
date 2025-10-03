@@ -50,5 +50,5 @@ export async function handleResponse<T>(response: Response, schema: z.ZodType<T>
 }
 
 export async function handleVoidResponse(response: Response): Promise<void> {
-	await handleResponse(response, z.void().nullable());
+	await handleResponse(response, z.unknown());
 }
