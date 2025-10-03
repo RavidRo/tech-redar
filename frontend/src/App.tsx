@@ -8,7 +8,11 @@ import ErrorBox from './components/ErrorBox';
 import NewTechnologyModalForm from './components/NewTechnologyModalForm';
 import TechnologiesTable from './components/TechnologiesTable/TechnologiesTable';
 import useLoadingToast from './hooks/useLoadingToast';
-import { useTechnologiesStore, type Technology } from './hooks/useTechnologies';
+import {
+	useTechnologiesStore,
+	type EditedTechnology,
+	type Technology,
+} from './hooks/useTechnologies';
 import useToastedMutation from './hooks/useToastedMutation';
 import * as api from './libraries/api/technologies';
 import { confirmDeletion } from './libraries/confirmation';
@@ -40,7 +44,10 @@ function App() {
 		loadingMessage: (variables) => `Deleting ${variables}`,
 	});
 	const updateTechnologyMutation = useToastedMutation({
-		mutationFn: api.updateTechnology,
+		mutationFn: (editedTech: EditedTechnology) => {
+			const { name, ...request } = editedTech;
+			return api.updateTechnology(name, request);
+		},
 		onError: store.revert,
 		successMessage: (_data, variables) => `Saved ${variables.name}`,
 		loadingMessage: (variables) => `Updating ${variables.name}`,

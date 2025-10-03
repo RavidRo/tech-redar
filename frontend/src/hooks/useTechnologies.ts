@@ -1,30 +1,14 @@
 import { create } from 'zustand';
-// import { technologiesSample } from '../technologiesSample';
+import type { Stage, StageTransition, Technology } from '../libraries/api/technologies/schemas';
 
-export const CATEGORIES = [
-	'Observability',
-	'Development Tools',
-	'Frameworks',
-	'Data Management',
-] as const;
-export const STAGES = ['Asses', 'Trial', 'Adopt', 'Hold'] as const;
-export type Category = (typeof CATEGORIES)[number];
-export type Stage = (typeof STAGES)[number];
-
-export interface StageTransition {
-	originalStage: Stage;
-	transitionDate: Date;
-	adrLink: string;
-}
-
-export interface Technology {
-	name: string;
-	category: Category;
-	stage: Stage;
-	tags: string[];
-	detailsPage: string | null;
-	history: { stageTransitions: StageTransition[]; discoveryDate: Date };
-}
+// Re-export constants and types for backward compatibility
+export { CATEGORIES, STAGES } from '../libraries/api/technologies/schemas';
+export type {
+	Category,
+	Stage,
+	StageTransition,
+	Technology,
+} from '../libraries/api/technologies/schemas';
 
 interface TechnologyStoreState {
 	technologies: Technology[];

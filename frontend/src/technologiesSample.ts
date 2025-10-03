@@ -6,12 +6,10 @@ export const technologiesSample: Technology[] = [
 		category: 'Observability',
 		stage: 'Adopt',
 		tags: ['Logs'],
+		detailsPage: null,
 		history: {
 			stageTransitions: [],
-			discovery: {
-				discoveryDate: new Date(),
-				adrLink: null,
-			},
+			discoveryDate: new Date(),
 		},
 	},
 	{
@@ -19,12 +17,10 @@ export const technologiesSample: Technology[] = [
 		category: 'Observability',
 		stage: 'Adopt',
 		tags: ['Logs'],
+		detailsPage: null,
 		history: {
 			stageTransitions: [],
-			discovery: {
-				discoveryDate: new Date(),
-				adrLink: null,
-			},
+			discoveryDate: new Date(),
 		},
 	},
 	{
@@ -32,31 +28,27 @@ export const technologiesSample: Technology[] = [
 		category: 'Observability',
 		stage: 'Hold',
 		tags: ['Monitoring'],
+		detailsPage: null,
 		history: {
 			stageTransitions: [
 				{
 					adrLink: 'https://www.google.com/',
 					transitionDate: new Date(),
-					originalStage: 'Asses',
+					originalStage: 'Assess',
 				},
 			],
-			discovery: {
-				discoveryDate: new Date(),
-				adrLink: null,
-			},
+			discoveryDate: new Date(),
 		},
 	},
 	{
 		name: 'Pyguru',
 		category: 'Development Tools',
-		stage: 'Asses',
+		stage: 'Assess',
 		tags: ['Monitoring'],
+		detailsPage: null,
 		history: {
 			stageTransitions: [],
-			discovery: {
-				discoveryDate: new Date(),
-				adrLink: null,
-			},
+			discoveryDate: new Date(),
 		},
 	},
 ];

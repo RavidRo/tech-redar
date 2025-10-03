@@ -40,7 +40,7 @@ tasks:
     desc: Run frontend tests
     dir: frontend
     cmds:
-      - echo "No tests yes :("
+      - npm run test
 
   lint:backend:
     dir: backend
@@ -76,7 +76,16 @@ tasks:
       - task: test
 
   update:
+      - task: update:backend
+      - task: update:frontend
+
+  update:backend:
     dir: backend
     cmds:
       - poetry lock
       - poetry install
+  
+  update:frontend:
+    dir: frontend
+    cmds:
+      - npm install
