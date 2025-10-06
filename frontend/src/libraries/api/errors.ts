@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// Error response schema
 export const ClientErrorResponseSchema = z.object({
 	detail: z.union([z.string(), z.object({}), z.array(z.unknown())]),
 });

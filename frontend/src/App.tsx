@@ -6,6 +6,7 @@ import EditTechnologyModalForm, {
 } from './components/EditTechnologyModalForm';
 import ErrorBox from './components/ErrorBox';
 import NewTechnologyModalForm from './components/NewTechnologyModalForm';
+import RadarView from './components/radar/RadarView';
 import TechnologiesTable from './components/TechnologiesTable/TechnologiesTable';
 import useLoadingToast from './hooks/useLoadingToast';
 import {
@@ -54,6 +55,7 @@ function App() {
 	});
 
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+	const [viewMode, setViewMode] = useState<'table' | 'radar'>('radar');
 
 	const tags = [...new Set(store.technologies.map((technology) => technology.tags).flat())];
 
@@ -65,21 +67,60 @@ function App() {
 			{error ? (
 				<ErrorBox error={error} errorMessage="Encountered an error while fetching technologies" />
 			) : isSuccess ? (
-				<TechnologiesTable
-					technologies={store.technologies}
-					onAddNewTechnology={() => {
-						setIsAddModalOpen(true);
-					}}
-					editTechnology={(technology) => {
-						editTechnologyModalRef.current?.open(technology);
-					}}
-					onDeleteTechnology={(name: string) => {
-						confirmDeletion(() => {
-							store.deleteTechnology(name);
-							deleteTechnologyMutation.mutate(name);
-						}, name);
-					}}
-				/>
+				<>
+					<div style={{ marginBottom: '20px' }}>
+						<button
+							onClick={() => {
+								setViewMode('table');
+							}}
+							style={{
+								marginRight: '10px',
+								padding: '8px 16px',
+								backgroundColor: viewMode === 'table' ? '#1890ff' : '#f0f0f0',
+								color: viewMode === 'table' ? 'white' : 'black',
+								border: 'none',
+								borderRadius: '4px',
+								cursor: 'pointer',
+							}}
+						>
+							Table View
+						</button>
+						<button
+							onClick={() => {
+								setViewMode('radar');
+							}}
+							style={{
+								padding: '8px 16px',
+								backgroundColor: viewMode === 'radar' ? '#1890ff' : '#f0f0f0',
+								color: viewMode === 'radar' ? 'white' : 'black',
+								border: 'none',
+								borderRadius: '4px',
+								cursor: 'pointer',
+							}}
+						>
+							Radar View
+						</button>
+					</div>
+					{viewMode === 'table' ? (
+						<TechnologiesTable
+							technologies={store.technologies}
+							onAddNewTechnology={() => {
+								setIsAddModalOpen(true);
+							}}
+							editTechnology={(technology) => {
+								editTechnologyModalRef.current?.open(technology);
+							}}
+							onDeleteTechnology={(name: string) => {
+								confirmDeletion(() => {
+									store.deleteTechnology(name);
+									deleteTechnologyMutation.mutate(name);
+								}, name);
+							}}
+						/>
+					) : (
+						<RadarView technologies={store.technologies} />
+					)}
+				</>
 			) : (
 				<></>
 			)}
